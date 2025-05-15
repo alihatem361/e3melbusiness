@@ -26,6 +26,18 @@
     <!-- iOS Safari -->
     <meta name="apple-mobile-web-app-status-bar-style" content="#913BFF">
 
+    <!-- Preconnect to CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <!-- Preload critical assets -->
+    <link rel="preload" as="image" href="assets/img/two-multiracial-colleagues-small.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/img/partner (1).svg" fetchpriority="high">
+    <link rel="preload" as="style" href="assets/css/bootstrap.min.css">
+    <link rel="preload" as="style" href="assets/css/main.css">
+    <link rel="preload" as="style" href="assets/css/e3melbusiness.css">
+
     <!-- <link rel="manifest" href="site.webmanifest" /> -->
     <link rel="shortcut icon" type="" href="assets/img/partner (1).svg" />
     <!-- Place favicon.ico in the root directory -->
@@ -43,8 +55,6 @@
     <link rel="stylesheet" href="assets/css/e3melbusiness.css" />
 
     <!-- Add Arabic Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cascadia+Mono&display=swap" rel="stylesheet">
@@ -62,20 +72,61 @@
         .hero-content-inner h1 {
             font-family: 'Alexandria', sans-serif;
         }
+
+        .theme-banner-four {
+            background-image: url('assets/img/two-multiracial-colleagues-small.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            will-change: transform;
+            transition: background-image 0.3s ease-in-out;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 500px;
+        }
+
+        @media (min-width: 768px) {
+            .theme-banner-four {
+                background-image: url('assets/img/two-multiracial-colleagues.webp');
+            }
+        }
+
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s ease-out;
+        }
+
+        .page-loader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(0.95); }
+        }
     </style>
 </head>
 
 
 <body>
     <!-- Loader Start -->
-    <div class="page-loader ">
-        <div class="loader-content text-center d-flex flex-column justify-content-center align-items-center">
-            <div class="loader-logo">
-                <img src="assets/img/partner (1).svg" alt="Fibank Logo">
-            </div>
-            <div class="loader-progress">
-                <div class="progress-bar"></div>
-            </div>
+    <div class="page-loader">
+        <div class="loader-content">
+            <img src="assets/img/partner (1).svg" alt="Logo" width="60" height="60" loading="eager">
         </div>
     </div>
     <!-- Loader End -->
@@ -417,19 +468,27 @@
 
         <!-- Loader Script -->
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const loader = document.querySelector('.page-loader');
-
-                // Simulate loading time (you can remove this in production)
+        document.addEventListener('DOMContentLoaded', function () {
+            const loader = document.querySelector('.page-loader');
+            const banner = document.querySelector('.theme-banner-four');
+            
+            // Show loader for only 300ms
+            setTimeout(() => {
+                loader.classList.add('fade-out');
                 setTimeout(() => {
-                    loader.classList.add('fade-out');
+                    loader.remove();
+                }, 200);
+            }, 300);
 
-                    // Remove loader from DOM after animation
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                    }, 500);
-                }, 2000); // Show loader for 2 seconds
-            });
+            // Load high quality image after small one
+            if (window.innerWidth >= 768) {
+                const highQualityImage = new Image();
+                highQualityImage.src = 'assets/img/two-multiracial-colleagues.webp';
+                highQualityImage.onload = function() {
+                    banner.style.backgroundImage = `url(${this.src})`;
+                };
+            }
+        });
         </script>
 
         <!-- Auto Scroll Partners Slider -->
@@ -470,6 +529,7 @@
             });
         </script>
 
+    </div>
 </body>
 
 </html>
